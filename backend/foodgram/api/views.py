@@ -14,7 +14,7 @@ from recipes.models import (
 )
 from users.models import Follow
 from .filters import IngredientSearchFilter, RecipeFilter
-from .format_shopping_list import format_shopping_list
+from .utils import format_shopping_list
 from .paginators import LimitPageNumberPagination
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from .serializers import (
