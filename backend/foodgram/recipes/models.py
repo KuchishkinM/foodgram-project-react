@@ -3,13 +3,14 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 User = get_user_model()
+DEFAULT_COLOR = '#00FF00'
 
 
 class Tag(models.Model):
     name = models.CharField(verbose_name='Тег', max_length=200)
     color = ColorField(
         verbose_name='Цветовой HEX-код',
-        default='#00FF00',
+        default=DEFAULT_COLOR,
         format='hex',
         unique=True
     )
@@ -72,7 +73,7 @@ class Recipe(models.Model):
         ordering = ('-id',)
         constraints = (
             models.CheckConstraint(
-                check=models.Q(cooking_time__gte=0),
+                check=models.Q(cooking_time__gt=0),
                 name='%(app_label)s_%(class)s_cooking_time__gte=0'
             ),
         )

@@ -5,8 +5,9 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
 
-from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
-                            ShoppingCart, Tag)
+from recipes.models import (
+    Favorite, Ingredient, IngredientRecipe, Recipe, ShoppingCart, Tag
+)
 from users.models import Follow
 
 User = get_user_model()
@@ -14,13 +15,21 @@ User = get_user_model()
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     email = serializers.EmailField(
-        validators=[UniqueValidator(queryset=User.objects.all())])
+        validators=[UniqueValidator(
+            queryset=User.objects.all())]
+    )
     username = serializers.CharField(
-        validators=[UniqueValidator(queryset=User.objects.all())])
+        validators=[UniqueValidator(
+            queryset=User.objects.all())]
+    )
 
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'username', 'email',
+        fields = ('id',
+                  'first_name',
+                  'last_name',
+                  'username',
+                  'email',
                   'password')
         extra_kwargs = {
             'first_name': {'required': True},
@@ -41,8 +50,9 @@ class CustomUserSerializer(UserSerializer):
 
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user
-        return (not user.is_anonymous
-                and Follow.objects.filter(user=user, author=obj.id).exists())
+        if not user.is_authenticated:
+            return False
+        return user.follower.filter(author=obj).exists()
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -162,14 +172,14 @@ class CreateUpdateRecipeSerializer(serializers.ModelSerializer):
         return data
 
     def create_ingredients(self, ingredients, recipe):
-        for ingredient in ingredients:
-            IngredientRecipe.objects.create(
-                recipe=recipe,
-                ingredient_id=ingredient['id'],
-                amount=ingredient['amount'],
-            )
+        IngredientRecipe.objects.bulk_create(
+            (IngredientRecipe(recipe=recipe,
+                              amount=ingredient('amount'),
+                              ingredient=ingredient('ingredient'),
+                              ) for ingredient in ingredients))
 
     def create(self, validated_data):
+
         tags_data = validated_data.pop('tags')
         ingredients_data = validated_data.pop('ingredients')
         image = validated_data.pop('image')
@@ -189,10 +199,8 @@ class CreateUpdateRecipeSerializer(serializers.ModelSerializer):
         return super().update(recipe, validated_data)
 
     def to_representation(self, instance):
-        request = self.context.get('request')
-        context = {'request': request}
-        return ListRecipeSerializer(
-            instance, context=context).data
+        context = self.context
+        return ListRecipeSerializer(instance, context=context).data
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
@@ -214,7 +222,8 @@ class FavoriteSerializer(serializers.ModelSerializer):
         model = Favorite
         fields = ('id', 'name', 'image', 'cooking_time', 'user', 'recipe')
         extra_kwargs = {'user': {'write_only': True},
-                        'recipe': {'write_only': True}}
+                        'recipe': {'write_only': True}
+                        }
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):

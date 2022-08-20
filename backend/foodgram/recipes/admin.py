@@ -1,8 +1,9 @@
 from django.contrib.admin import ModelAdmin, TabularInline, register, site
 from django.utils.safestring import mark_safe
 
-from .models import (Favorite, Ingredient, IngredientRecipe, Recipe,
-                     ShoppingCart, Tag)
+from .models import (
+    Favorite, Ingredient, IngredientRecipe, Recipe, ShoppingCart, Tag
+)
 
 site.site_header = 'Админка Foodgram'
 
@@ -23,8 +24,12 @@ class IngredientAdmin(ModelAdmin):
 
 @register(Recipe)
 class RecipeAdmin(ModelAdmin):
-    list_display = ('id', 'name', 'author',
-                    '_get_thumbnail', '_favorite_count')
+    list_display = ('id',
+                    'name',
+                    'author',
+                    '_get_thumbnail',
+                    '_favorite_count'
+                    )
     search_fields = ('name', 'author')
     list_filter = ('name', 'author__username')
     inlines = (IngredientRecipeInLine,)

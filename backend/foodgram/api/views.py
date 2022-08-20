@@ -1,7 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.db.models import Sum
 from django.http import HttpResponse
-from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import status, viewsets
@@ -11,16 +9,18 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
-                            ShoppingCart, Tag)
+from recipes.models import (
+    Favorite, Ingredient, Recipe, ShoppingCart, Tag
+)
 from users.models import Follow
 from .filters import IngredientSearchFilter, RecipeFilter
+from .format_shopping_list import format_shopping_list
 from .paginators import LimitPageNumberPagination
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
-from .serializers import (CreateUpdateRecipeSerializer,
-                          FollowSerializer, IngredientSerializer,
-                          ListRecipeSerializer, ShortRecipeSerializer,
-                          TagSerializer)
+from .serializers import (
+    CreateUpdateRecipeSerializer, FollowSerializer, IngredientSerializer,
+    ListRecipeSerializer, ShortRecipeSerializer, TagSerializer
+)
 
 User = get_user_model()
 
@@ -28,7 +28,8 @@ User = get_user_model()
 class CustomUserViewSet(UserViewSet):
     pagination_class = LimitPageNumberPagination
 
-    @action(detail=True, methods=('post',),
+    @action(detail=True,
+            methods=('post',),
             permission_classes=(IsAuthenticated,))
     def subscribe(self, request, id=None):
         user = request.user
@@ -112,16 +113,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def favorite(self, request, pk=None):
         if request.method == 'POST':
             return self.add_obj(Favorite, request.user, pk)
-        elif request.method == 'DELETE':
-            return self.delete_obj(Favorite, request.user, pk)
 
     @action(detail=True, methods=('post', 'delete'),
             permission_classes=(IsAuthenticated,))
     def shopping_cart(self, request, pk=None):
         if request.method == 'POST':
             return self.add_obj(ShoppingCart, request.user, pk)
-        elif request.method == 'DELETE':
-            return self.delete_obj(ShoppingCart, request.user, pk)
 
     @action(detail=False, methods=('get',),
             permission_classes=(IsAuthenticated,))
@@ -132,20 +129,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 'errors': 'Ваш список покупок пуст.'
             }, status=status.HTTP_400_BAD_REQUEST
             )
-        ingredients = IngredientRecipe.objects.filter(
-            recipe__cart__user=user).values(
-            'ingredient__name',
-            'ingredient__measurement_unit'
-        ).annotate(amount=Sum('amount'))
         filename = f'{user.username}_shopping_list.txt'
-        shopping_list = (
-            f'Список покупок ({user.first_name})\n'
-            f'{timezone.localtime().strftime("%d/%m/%Y %H:%M")}\n\n'
-        )
-        for ing in ingredients:
-            shopping_list += (f'{ing["ingredient__name"]}: {ing["amount"]} '
-                              f'{ing["ingredient__measurement_unit"]}\n')
-        shopping_list += '\nFoodgram'
+        shopping_list = format_shopping_list(user)
         response = HttpResponse(
             shopping_list, content_type='text.txt; charset=utf-8'
         )
@@ -164,9 +149,5 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def delete_obj(self, model, user, pk):
         obj = model.objects.filter(user=user, recipe__id=pk)
-        if obj.exists():
-            obj.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response({
-            'errors': 'Рецепт уже удален.'
-        }, status=status.HTTP_400_BAD_REQUEST)
+        obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
