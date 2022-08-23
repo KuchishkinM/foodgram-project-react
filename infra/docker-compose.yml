@@ -1,8 +1,17 @@
-version: '3.8'
+version: '3.3'
+
+volumes:
+  static_value:
+  media_value:
+  result_build:
+  postgres_data:
+  redoc:
+
+
 services:
 
   db:
-    image: postgres:13.0-alpine
+    image: postgres:12.4
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
@@ -23,10 +32,10 @@ services:
   frontend:
     image: kuchishkinmax/foodgram_front:latest
     volumes:
-      - result_build:/app/result_build
+      - result_build:/app/result_build/build/
 
   nginx:
-    image: nginx:1.21.3-alpine
+    image: nginx:1.19.3
     ports:
       - 80:80
     volumes:
@@ -36,14 +45,7 @@ services:
       - result_build:/usr/share/nginx/html/
       - redoc:/usr/share/nginx/html/api/docs/
     depends_on:
-      - frontend
       - backend
+      - frontend
     env_file:
       - ./.env
-
-volumes:
-  static_value:
-  media_value:
-  result_build:
-  postgres_data:
-  redoc:
