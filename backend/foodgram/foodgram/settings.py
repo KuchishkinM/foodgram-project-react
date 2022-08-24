@@ -1,18 +1,14 @@
 import os
 
-from dotenv import load_dotenv
+from pathlib import Path
 
-load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SECRET_KEY = 'django-insecure-^^6-05=n*i@5_z(-1nwzw(!2jt9vuavbiu*&kqm*zltqh@x_^c'
 
+DEBUG = True
 
-SECRET_KEY = os.getenv('SECRET_KEY', default='django-insecure-^^6-05=n*i@5_z(-1nwzw(!2jt9vuavbiu*&kqm*zltqh@x_^c')
-
-DEBUG = False
-
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='localhost').split()
-
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -24,10 +20,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
-    'recipes.apps.RecipesConfig',
-    'api.apps.ApiConfig',
-    'users.apps.UsersConfig',
-    'django_filters',
+    'api',
+    'users',
+    'recipes',
+    'colorfield',
 ]
 
 MIDDLEWARE = [
@@ -43,6 +39,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'foodgram.urls'
 
 TEMPLATES = [
+
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
@@ -60,46 +57,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
-
-'''
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.getenv('DB_ENGINE',
+                            default='django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', default='postgres'),
+        'USER': os.getenv('POSTGRES_USER', default='postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='password'),
+        'HOST': os.getenv('DB_HOST', default='db'),
+        'PORT': os.getenv('DB_PORT', default=5432)
     }
 }
-'''
-DATABASES = {
-    'default': {
-        'ENGINE': os.getenv(
-            'DB_ENGINE',
-            default='django.db.backends.postgresql'
-        ),
-        'NAME': os.getenv(
-            'DB_NAME',
-            default='postgres'
-        ),
-        'USER': os.getenv(
-            'POSTGRES_USER',
-            default='postgres'
-        ),
-        'PASSWORD': os.getenv(
-            'POSTGRES_PASSWORD',
-            default='postgres'
-        ),
-        'HOST': os.getenv(
-            'DB_HOST',
-            default='db'
-        ),
-        'PORT': os.getenv(
-            'DB_PORT',
-            default='5432'
-        )
-    }
-}
-
-AUTH_USER_MODEL = 'users.User'
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -115,17 +83,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-
-LANGUAGE_CODE = 'ru-ru'
-
-TIME_ZONE = 'Europe/Moscow'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -146,20 +103,29 @@ DJOSER = {
         'user_create': 'api.serializers.CustomUserCreateSerializer',
         'user': 'api.serializers.CustomUserSerializer',
         'current_user': 'api.serializers.CustomUserSerializer',
-
     },
     'PERMISSIONS': {
         'user': ('djoser.permissions.CurrentUserOrAdminOrReadOnly',),
         'user_list': ('rest_framework.permissions.AllowAny',)
     }
-
 }
 
+LANGUAGE_CODE = 'ru-RU'
+
+TIME_ZONE = 'Europe/Moscow'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATIC_URL = '/static/'
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
