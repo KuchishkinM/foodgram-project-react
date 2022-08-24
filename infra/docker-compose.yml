@@ -3,14 +3,10 @@ services:
 
   db:
     image: postgres:13.0-alpine
-    environment:
-      -POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      -POSTGRES_USER: ${POSTGRES_USER}
-      -DB_HOST: ${DB_HOST}
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - .env
+      - infra/.env
 
   backend:
     image: kuchishkinmax/foodgram_back:latest
@@ -22,12 +18,12 @@ services:
     depends_on:
       - db
     env_file:
-      - .env
+      - infra/.env
 
   frontend:
     image: kuchishkinmax/foodgram_front:latest
     volumes:
-      - build/:/app/result_build/
+      - result_build:/app/result_build/build/
     depends_on:
       - backend
 
@@ -46,9 +42,9 @@ services:
       - frontend
 
 volumes:
-  build:
   postgres_data:
   static_value:
   media_value:
   data_value:
+  result_build:
    
