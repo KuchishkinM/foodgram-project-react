@@ -47,4 +47,5 @@ volumes:
   media_value:
   data_value:
   result_build:
+  build:
    
