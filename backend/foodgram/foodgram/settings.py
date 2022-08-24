@@ -1,13 +1,18 @@
 import os
-from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+from dotenv import load_dotenv
 
-SECRET_KEY = 'django-insecure-^^6-05=n*i@5_z(-1nwzw(!2jt9vuavbiu*&kqm*zltqh@x_^c'
+load_dotenv()
 
-DEBUG = True
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-ALLOWED_HOSTS = ['*']
+
+SECRET_KEY = os.getenv('SECRET_KEY', default='123')
+
+DEBUG = False
+
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='localhost').split()
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -19,11 +24,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
-    'api',
-    'users',
-    'recipes',
-    'colorfield',
-
+    'recipes.apps.RecipesConfig',
+    'api.apps.ApiConfig',
+    'users.apps.UsersConfig',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -56,17 +60,46 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
+
+'''
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE',
-                            default='django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME', default='postgres'),
-        'USER': os.getenv('POSTGRES_USER', default='postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='password'),
-        'HOST': os.getenv('DB_HOST', default='db'),
-        'PORT': os.getenv('DB_PORT', default=5432)
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': os.getenv(
+            'DB_ENGINE',
+            default='django.db.backends.postgresql'
+        ),
+        'NAME': os.getenv(
+            'DB_NAME',
+            default='postgres'
+        ),
+        'USER': os.getenv(
+            'POSTGRES_USER',
+            default='postgres'
+        ),
+        'PASSWORD': os.getenv(
+            'POSTGRES_PASSWORD',
+            default='postgres'
+        ),
+        'HOST': os.getenv(
+            'DB_HOST',
+            default='db'
+        ),
+        'PORT': os.getenv(
+            'DB_PORT',
+            default='5432'
+        )
+    }
+}
+
+AUTH_USER_MODEL = 'users.User'
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -83,32 +116,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 6,
-}
 
-DJOSER = {
-    'LOGIN_FIELD': 'email',
-    'HIDE_USERS': False,
-    'SERIALIZERS': {
-        'user_create': 'api.serializers.CustomUserCreateSerializer',
-        'user': 'api.serializers.CustomUserSerializer',
-        'current_user': 'api.serializers.CustomUserSerializer',
-    },
-    'PERMISSIONS': {
-        'user': ('djoser.permissions.CurrentUserOrAdminOrReadOnly',),
-        'user_list': ('rest_framework.permissions.AllowAny',)
-    }
-}
-
-LANGUAGE_CODE = 'ru-RU'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'Europe/Moscow'
 
@@ -118,10 +127,36 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'api.pagination.CustomPagination',
+}
+
+DJOSER = {
+    'SERIALIZERS': {
+        'user': 'api.serializers.UserSerializer',
+        'user_create': 'api.serializers.UserSerializer',
+        'current_user': 'api.serializers.UserSerializer',
+    },
+    'PERMISSIONS': {
+        'user_list': ('rest_framework.permissions.AllowAny',),
+        'user': ('rest_framework.permissions.AllowAny',),
+    },
+    'HIDE_USERS': False,
+}
+
 
 MEDIA_URL = '/media/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+PAGES = 6
