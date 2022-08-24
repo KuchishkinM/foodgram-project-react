@@ -22,7 +22,7 @@ services:
   frontend:
     image: kuchishkinmax/foodgram_front:latest
     volumes:
-      - result_build:/app/result_build/build/
+      - result_build:/app/result_build/
     depends_on:
       - backend
 
