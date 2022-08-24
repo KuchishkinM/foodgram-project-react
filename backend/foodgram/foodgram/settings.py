@@ -1,4 +1,5 @@
 import os
+
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,7 +24,6 @@ INSTALLED_APPS = [
     'users',
     'recipes',
     'colorfield',
-
 ]
 
 MIDDLEWARE = [
@@ -39,6 +39,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'foodgram.urls'
 
 TEMPLATES = [
+
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
@@ -91,6 +92,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 6,
+
 }
 
 DJOSER = {
@@ -118,9 +120,11 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
