@@ -1,5 +1,4 @@
-![example event parameter](https://github.com/KuchishkinM/foodgram-project-reac
-/actions/workflows/main.yml/badge.svg?event=push)
+![example event parameter](https://github.com/KuchishkinM/foodgram-project-react/actions/workflows/main.yml/badge.svg?event=push)
 # Приложние Foodgram
 ## Описание
 
