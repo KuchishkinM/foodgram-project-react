@@ -1,3 +1,5 @@
+![example event parameter](https://github.com/KuchishkinM/foodgram-project-reac
+/actions/workflows/main.yml/badge.svg?event=push)
 # Приложние Foodgram
 ## Описание
 
@@ -5,10 +7,7 @@
 * Создавать рецепты
 * Подписываться на авторов рецептов
 * Добавлять рецепты других пользователей в избранное
-
-## Документация 
-
-http://localhost/api/docs/
+* Формировать и скачивать список покупок
 
 ### Установка проекта:
 
@@ -27,20 +26,35 @@ touch .env
 
 ```
 DB_ENGINE=django.db.backends.postgresql
-DB_NAME=foodgram
-POSTGRES_USER=kmc
-POSTGRES_PASSWORD=842764
-DB_HOST=127.0.0.1
+DB_NAME=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+DB_HOST=db
 DB_PORT=5432
 ```
-### Запуск проекта:
-Перейти в директорию с файлом manage.py:
+### Запуск проекта на сервере:
+
+Установить Docker и Docker-compose:
+
 ```
-cd ..
-cd backend/foodgram
+sudo apt install docker.io
+sudo apt install docker-compose
 ```
-Запустить локальный сервер:
+
+Выполнить миграции:
+
 ```
-python manage.py runserver
+sudo docker-compose exec backend python manage.py migrate
+```
+
+Создать суперпользователя:
+
+```
+sudo docker-compose exec backend python manage.py createsuperuser
+```
+Собрать статику:
+
+```
+sudo docker-compose exec backend python manage.py collectstatic --no-input
 ```
 ### Автор: Кучишкин Максим
