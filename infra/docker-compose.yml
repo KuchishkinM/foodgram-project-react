@@ -19,7 +19,7 @@ services:
       - ./.env
 
   frontend:
-    image: kuchishkinmax/front:latest
+    image: kuchishkinmax/foodgram_front:latest
     volumes:
       - ../frontend/:/app/result_build/
 
