@@ -111,7 +111,7 @@ class ListRecipeSerializer(serializers.ModelSerializer):
         fields = ('id', 'tags', 'author', 'ingredients', 'is_favorited',
                   'is_in_shopping_cart', 'name', 'image', 'text',
                   'cooking_time')
-        read_only_fields = ('author', 'tags',)
+        read_only_fields = ('is_favorite', 'is_shopping_cart',)
 
     def get_is_favorited(self, obj):
         user = self.context.get('request').user
@@ -204,12 +204,11 @@ class CreateUpdateRecipeSerializer(serializers.ModelSerializer):
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
-    image = Base64ImageField()
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
-        read_only_fields = ('id', 'name', 'image', 'cooking_time')
+        fields = 'id', 'name', 'image', 'cooking_time'
+        read_only_fields = '__all__',
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
