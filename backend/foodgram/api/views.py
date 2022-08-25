@@ -113,12 +113,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def favorite(self, request, pk=None):
         if request.method == 'POST':
             return self.add_obj(Favorite, request.user, pk)
+        elif request.method == 'DELETE':
+            return self.delete_obj(Favorite, request.user, pk)
 
     @action(detail=True, methods=('post', 'delete'),
             permission_classes=(IsAuthenticated,))
     def shopping_cart(self, request, pk=None):
         if request.method == 'POST':
             return self.add_obj(ShoppingCart, request.user, pk)
+        elif request.method == 'DELETE':
+            return self.delete_obj(ShoppingCart, request.user, pk)
 
     @action(detail=False, methods=('get',),
             permission_classes=(IsAuthenticated,))
