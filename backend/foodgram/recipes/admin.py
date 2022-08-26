@@ -23,6 +23,14 @@ class IngredientAdmin(ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+@register(IngredientRecipe)
+class IngredientRecipeAdmin(ModelAdmin):
+    list_display = ('ingredient', 'recipe', 'amount')
+    search_fields = ('name',)
+    list_filter = ('name',)
+    empty_value_display = '-пусто-'
+
+
 @register(Recipe)
 class RecipeAdmin(ModelAdmin):
     list_display = ('id',
@@ -56,5 +64,3 @@ class TagAdmin(ModelAdmin):
 
 site.register(Favorite)
 site.register(ShoppingCart)
-site.register(Ingredient)
-site.register(IngredientRecipe)
