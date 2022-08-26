@@ -5,6 +5,7 @@ from .models import (
     Favorite, Ingredient, IngredientAmount, IngredientRecipe, Recipe,
     ShoppingCart, Tag
 )
+
 EMPTY_VALUE = '-пусто-'
 site.site_header = 'Админка Foodgram'
 
