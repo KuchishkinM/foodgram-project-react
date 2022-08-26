@@ -56,3 +56,4 @@ class TagAdmin(ModelAdmin):
 
 site.register(Favorite)
 site.register(ShoppingCart)
+site.register(IngredientRecipe)
