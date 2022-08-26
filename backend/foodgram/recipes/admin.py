@@ -16,7 +16,7 @@ class IngredientRecipeInLine(TabularInline):
 
 @register(Ingredient)
 class IngredientAdmin(ModelAdmin):
-    list_display = ('id', 'name', 'measurement_unit')
+    list_display = ('id', 'name', 'measurement_unit', 'amount')
     search_fields = ('name',)
     list_filter = ('name',)
     empty_value_display = '-пусто-'
@@ -31,7 +31,7 @@ class RecipeAdmin(ModelAdmin):
                     '_favorite_count'
                     )
     search_fields = ('name', 'author')
-    list_filter = ('name', 'author__username')
+    list_filter = ('name', 'author__username', 'tags')
     inlines = (IngredientRecipeInLine,)
     readonly_fields = ['_get_thumbnail']
 
