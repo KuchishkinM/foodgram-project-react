@@ -5,7 +5,7 @@ from djoser.views import UserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
@@ -81,6 +81,7 @@ class CustomUserViewSet(UserViewSet):
 
 class TagsViewSet(ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
+    permission_classes = (AllowAny,)
     serializer_class = TagSerializer
     pagination_class = None
 

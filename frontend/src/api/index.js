@@ -31,18 +31,6 @@ class Api {
     })
   }
 
-  getDammyResponse () {
-      const data = {
-              "count": 0,
-              "next": null,
-              "previous": null,
-              "results": []
-          };
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-      const init = {"status": 200, "detail": "DammyResponse!"};
-      return new Response(blob, init);
-  }
-
   signin ({ email, password }) {
     return fetch(
       '/api/auth/token/login/',
@@ -126,11 +114,6 @@ class Api {
       const token = localStorage.getItem('token')
       const authorization = token ? { 'authorization': `Token ${token}` } : {}
       const tagsString = tags ? tags.filter(tag => tag.value).map(tag => `&tags=${tag.slug}`).join('') : ''
-
-      if (!tagsString && !is_in_shopping_cart) {
-          return this.checkResponse(this.getDammyResponse())
-      }
-
       return fetch(
         `/api/recipes/?page=${page}&limit=${limit}${author ? `&author=${author}` : ''}${is_favorited ? `&is_favorited=${is_favorited}` : ''}${is_in_shopping_cart ? `&is_in_shopping_cart=${is_in_shopping_cart}` : ''}${tagsString}`,
         {
