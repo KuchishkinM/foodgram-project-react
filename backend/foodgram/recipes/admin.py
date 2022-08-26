@@ -2,11 +2,10 @@ from django.contrib.admin import ModelAdmin, TabularInline, register, site
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Favorite, Ingredient, IngredientAmount, IngredientRecipe, Recipe,
+    Favorite, Ingredient, IngredientRecipe, Recipe,
     ShoppingCart, Tag
 )
 
-EMPTY_VALUE = '-пусто-'
 site.site_header = 'Админка Foodgram'
 
 
@@ -21,13 +20,14 @@ class IngredientAdmin(ModelAdmin):
     list_display = ('id', 'name', 'measurement_unit')
     search_fields = ('name',)
     list_filter = ('name',)
-    empty_value_display = EMPTY_VALUE
+    empty_value_display = '-пусто-'
 
 
-@register(IngredientAmount)
-class IngredientAmountAdmin(ModelAdmin):
-    list_display = ('id', 'ingredient', 'recipe', 'amount')
-    empty_value_display = EMPTY_VALUE
+@register(IngredientRecipe)
+class IngredientRecipeAdmin(ModelAdmin):
+    list_display = ('ingredient', 'recipe', 'amount')
+    search_fields = ('name',)
+    list_filter = ('name',)
 
 
 @register(Recipe)
