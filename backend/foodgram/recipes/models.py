@@ -41,6 +41,41 @@ class Ingredient(models.Model):
         return f'{self.name} {self.measurement_unit}'
 
 
+class IngredientAmount(models.Model):
+    recipe = models.ForeignKey(
+        to='recipes.Recipe', on_delete=models.CASCADE, verbose_name='Рецепт'
+    )
+    ingredient = models.ForeignKey(
+        to='recipes.Ingredient',
+        on_delete=models.CASCADE,
+        verbose_name='Ингредиент',
+    )
+    amount = models.PositiveSmallIntegerField(
+        verbose_name='Количество ингредиента',
+    )
+
+    class Meta:
+        verbose_name = 'Количество ингредиента'
+        verbose_name_plural = 'Количество ингредиентов'
+        constraints = (
+            models.UniqueConstraint(
+                fields=(
+                    'ingredient',
+                    'recipe',
+                ),
+                name='unique_ingredient_amount',
+            ),
+        )
+        default_related_name = 'amounts'
+        app_label = 'recipes'
+
+    def __str__(self) -> str:
+        return (
+            f'{self.recipe.name} {self.ingredient.name} '
+            f'{self.ingredient.measurement_unit}'
+        )
+
+
 class Recipe(models.Model):
     name = models.CharField(
         verbose_name='Название',
