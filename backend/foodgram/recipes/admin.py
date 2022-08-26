@@ -23,11 +23,11 @@ class IngredientAdmin(ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-@register(IngredientRecipe)
-class IngredientRecipeAdmin(ModelAdmin):
-    list_display = ('ingredient', 'recipe', 'amount')
-    search_fields = ('name',)
-    list_filter = ('name',)
+#@register(IngredientRecipe)
+#class IngredientRecipeAdmin(ModelAdmin):
+#    list_display = ('ingredient', 'recipe', 'amount')
+#    search_fields = ('name',)
+#    list_filter = ('name',)
 
 
 @register(Recipe)
