@@ -419,3 +419,4 @@ class Api {
 }
 
 export default new Api(process.env.API_URL || 'http://localhost', { 'content-type': 'application/json' })
+
