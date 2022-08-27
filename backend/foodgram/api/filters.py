@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django_filters import FilterSet, filters
-from recipes.models import Recipe
+from recipes.models import Recipe, Tag
 from rest_framework.filters import SearchFilter
 
 User = get_user_model()
@@ -8,6 +8,7 @@ User = get_user_model()
 
 class RecipeFilter(FilterSet):
     tags = filters.ModelMultipleChoiceFilter(field_name='tags__slug')
+    queryset = Tag.objects.all()
     author = filters.ModelChoiceFilter(queryset=User.objects.all())
     is_favorited = filters.NumberFilter(method='get_is_favorited')
     is_in_shopping_cart = filters.NumberFilter(
