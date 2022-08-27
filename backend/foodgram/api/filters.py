@@ -7,8 +7,11 @@ User = get_user_model()
 
 
 class RecipeFilter(FilterSet):
-    tags = filters.ModelMultipleChoiceFilter(field_name='tags__slug')
-    queryset = Tag.objects.all()
+    tags = filters.ModelMultipleChoiceFilter(
+        field_name='tags__slug',
+        queryset=Tag.objects.all(),
+        to_field_name='slug',
+    )
     author = filters.ModelChoiceFilter(queryset=User.objects.all())
     is_favorited = filters.NumberFilter(method='get_is_favorited')
     is_in_shopping_cart = filters.NumberFilter(
